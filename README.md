@@ -1,38 +1,38 @@
-# create-svelte
+# Pokedex
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+Small Pokedex project using Svelte.
 
-## Creating a project
+It started as a 24h challenged from a friend to learn Svelte and create a Pokedex-like app to his specifications.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Try it out!
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
-
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+1. Clone the repository.
+2. Inside the cloned folder, run:
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
 npm run dev -- --open
 ```
 
-## Building
+( Make sure you have the latest version of node and npm )
 
-To create a production version of your app:
+3. For now you can try manually entering the pokemon name or number in the url after 'pokedex'. For example:
 
 ```bash
-npm run build
+localhost:0000/pokedex/pikachu
 ```
 
-You can preview the production build with `npm run preview`.
+## Current Features.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+As requested by my challenging friend.
+
+- Retrieves information regarding the Pokemon and displays it.
+- Retrieves an image to go along with it (when it wants to work > >)
+- Kinda looks like a Pokedex.
+- Speech synth for the description for MAXIMUM IMMERSION (kinda sucks, tbh).
+
+## Planed Features.
+
+As requested by my challenging friend.
+
+- Search.
+- Search by type.
