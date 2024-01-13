@@ -81,17 +81,19 @@
     }
 
     async function getImageLink() {
-        fetch(`https://bulbapedia.bulbagarden.net/wiki/${pokemon.name}_(Pok%C3%A9mon)`) // Skip CORS... sometimes
-            .then(r => 
-                fetch(`https://bulbapedia.bulbagarden.net/wiki/File:${pokemon.idpad}${pokemon.name}.png`)
-                    .then(res => res.text())
-                    .then(body => {
-                        const matched = body.match(imgRe);
-                        if (matched) {
-                            pokemon.imgUrl = "https://" + matched[0];
-                        }
-                    })
-                )
+        pokemon.imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
+
+        // fetch(`https://bulbapedia.bulbagarden.net/wiki/${pokemon.name}_(Pok%C3%A9mon)`) // Skip CORS... sometimes
+        //     .then(r =>
+        //         fetch(`https://bulbapedia.bulbagarden.net/wiki/File:${pokemon.idpad}${pokemon.name}.png`)
+        //             .then(res => res.text())
+        //             .then(body => {
+        //                 const matched = body.match(imgRe);
+        //                 if (matched) {
+        //                     pokemon.imgUrl = "https://" + matched[0];
+        //                 }
+        //             })
+        //         )
     }
 </script>
 
@@ -127,5 +129,6 @@
 <style>
     .poke-image {
         width: -webkit-fill-available;
+        image-rendering: pixelated;
     }
 </style>
