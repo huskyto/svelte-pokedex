@@ -9,12 +9,15 @@
     import DescriptionRow from "$lib/DescriptionRow.svelte";
     import SearchBar from "$lib/SearchBar.svelte";
     import MenuToggle from "$lib/MenuToggle.svelte";
+    import ButtonBar from '$lib/ButtonBar.svelte';
 
     import { scale, slide, fade } from 'svelte/transition';
     import { backOut, quintOut } from 'svelte/easing';
 
     let open = false
-    const pokeid = $page.params.pokeid.replaceAll("0", "");
+    let frontOrBack = 0;
+    let defaultOrShiny = 0;
+    let pokeid = $page.params.pokeid;
     const imgRe = /archives.bulbagarden.net\/media\/upload\/.+?.png(?!\/)/g;
 
     let pokemon = {
@@ -29,10 +32,16 @@
         shape: "",
         type1: "",
         type2: "",
-        imgUrl: ""
+        imgUrl: "",
+        imgUrls: [["", ""], ["", ""]],
     };
 
     onMount(async () => {
+        pokeid = $page.params.pokeid.toLowerCase();
+        if (/^[0-9]+$/.test(pokeid)) {
+            pokeid = (+$page.params.pokeid).toString();
+        }
+
         fetch(`https://pokeapi.co/api/v2/pokemon/${pokeid}/`)
             .then(response => response.json())
             .then(data => {
@@ -57,7 +66,7 @@
                 }
 
                 getExtra(data.species.url);
-                getImageLink();
+                getImageLinks(data);
             }).catch(error => {
                 console.log(error);
                 return [];
@@ -86,22 +95,13 @@
         return str.charAt(0).toUpperCase() + str.slice(1);
     }
 
-    async function getImageLink() {
-        await new Promise(r => setTimeout(r, 100));
-        pokemon.imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
-
-        // fetch(`https://bulbapedia.bulbagarden.net/wiki/${pokemon.name}_(Pok%C3%A9mon)`) // Skip CORS... sometimes
-        //     .then(r =>
-        //         fetch(`https://bulbapedia.bulbagarden.net/wiki/File:${pokemon.idpad}${pokemon.name}.png`)
-        //             .then(res => res.text())
-        //             .then(body => {
-        //                 const matched = body.match(imgRe);
-        //                 if (matched) {
-        //                     pokemon.imgUrl = "https://" + matched[0];
-        //                 }
-        //             })
-        //         )
+    async function getImageLinks(data: any) {
+        pokemon.imgUrls[0][0] = data.sprites.front_default;
+        pokemon.imgUrls[0][1] = data.sprites.back_default;
+        pokemon.imgUrls[1][0] = data.sprites.front_shiny;
+        pokemon.imgUrls[1][1] = data.sprites.back_shiny;
     }
+
 </script>
 
 
@@ -110,13 +110,22 @@
         <MenuToggle bind:open={open}/>
         <SearchBar bind:open/>
     </Cell>
-    <Cell span={6} class="image-holder">
+    <Cell span={6}>
         <!-- Picture section -->
-        {#if pokemon.imgUrl.length > 0}
-            <img class="poke-image" src={pokemon.imgUrl} alt="{pokemon.name}... hopefully" transition:scale={{duration: 500, opacity: 0, easing: backOut }} />
-        {:else}
-            <img class="pokeball-image" src={'/pokeball.png'} alt="pokeball" />
-        {/if}
+        <LayoutGrid class="image-grid">
+            <Cell span={12} class="image-holder">
+                {#if pokemon.name.length > 0}
+                    <img class="poke-image" src={pokemon.imgUrls[defaultOrShiny][frontOrBack]} alt="{pokemon.name}... hopefully"
+                            transition:scale={{duration: 500, opacity: 0, easing: backOut }} />
+                {:else}
+                    <div style="height: 250px" />
+                    <img class="pokeball-image" src={'/pokeball.png'} alt="pokeball" />
+                {/if}
+            </Cell>
+            <Cell span={12}>
+                <ButtonBar {pokemon} bind:frontOrBack={frontOrBack} bind:defaultOrShiny={defaultOrShiny} />
+            </Cell>
+        </LayoutGrid>
     </Cell>
     <Cell span={6}>
         <!-- Data section -->

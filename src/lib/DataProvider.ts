@@ -3,8 +3,17 @@ export class DataProvider {
 
     // pokeRgx = /infocard-cell-data">(\d+).+?\/pokedex\/(\w+).+?\/type\/(\w+).+?(<\/td>|\/type\/(\w+))/g;
     // source = "https://pokemondb.net/pokedex/all";    // Can't use due to CORS.
-    source = "/pokelist.csv";
-    cache: Array<PokemonDef> = [];
+    private source = "/pokelist.csv";
+    private cache: Array<PokemonDef> = [];
+    private static instance: DataProvider;
+
+    public static getInstance(): DataProvider {
+        if (!DataProvider.instance) {
+            DataProvider.instance = new DataProvider();
+        }
+
+        return DataProvider.instance;
+    }
 
     private async retrieveData() {
         return fetch(this.source)
@@ -29,7 +38,7 @@ export class DataProvider {
             });
     }
 
-    private async getData(): Promise<Array<PokemonDef>> {
+    public async getData(): Promise<Array<PokemonDef>> {
         if (this.cache.length == 0) {
             await this.retrieveData();
         }

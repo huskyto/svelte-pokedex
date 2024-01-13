@@ -7,7 +7,7 @@
 
 	export let open = false;
 
-    const provider = new DataProvider();
+    const provider = DataProvider.getInstance();
     let searchText = "";
     let searchResult: Array<PokemonDef> = [];
 
