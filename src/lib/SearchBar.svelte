@@ -16,10 +16,11 @@
     }
 
     async function goToPage(target: PokemonDef) {
+        window.location.href = `./${target.id}`;    // This works well, but feels hacky. idk.
             // TODO: check why I have to do this weird thing for it to work :/
-        goto('/dummy').then(
-            () => goto(`/pokedex/${target.id}`)
-        );
+        // goto('/dummy').then(
+        //     () => goto(`/pokedex/${target.id}`, { replaceState: true, invalidateAll: true })
+        // );
     }
 </script>
 
