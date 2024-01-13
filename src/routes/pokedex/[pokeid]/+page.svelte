@@ -7,8 +7,11 @@
     import Header from "$lib/Header.svelte";
     import GeneraRow from "$lib/GeneraRow.svelte";
     import DescriptionRow from "$lib/DescriptionRow.svelte";
+    import SearchBar from "$lib/SearchBar.svelte";
+    import MenuToggle from "$lib/MenuToggle.svelte";
 
-    const pokeid = $page.params.pokeid;
+    let open = false
+    const pokeid = $page.params.pokeid.replaceAll("0", "");
     const imgRe = /archives.bulbagarden.net\/media\/upload\/.+?.png(?!\/)/g;
 
     let pokemon = {
@@ -97,7 +100,12 @@
     }
 </script>
 
+
 <LayoutGrid class="main-grid">
+    <Cell span={12} class="toggle-menu">
+        <MenuToggle bind:open={open}/>
+        <SearchBar bind:open/>
+    </Cell>
     <Cell span={6} class="image-holder">
         <!-- Picture section -->
         <img class="poke-image" src={pokemon.imgUrl} alt="{pokemon.name}... hopefully" />
@@ -130,5 +138,6 @@
     .poke-image {
         width: -webkit-fill-available;
         image-rendering: pixelated;
+        filter: drop-shadow(6px 6px 3px #5e5754c4);
     }
 </style>
