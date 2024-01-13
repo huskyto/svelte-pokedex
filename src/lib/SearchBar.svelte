@@ -1,8 +1,9 @@
 <script lang="ts">
     import LayoutGrid, { Cell } from '@smui/layout-grid';
+    import SearchTag from '$lib/SearchTag.svelte'
     import { DataProvider, PokemonDef } from '$lib/DataProvider';
-    import { goto, invalidateAll, invalidate } from '$app/navigation';
-    import { tick } from 'svelte';
+    import { goto } from '$app/navigation';
+    import { slide } from 'svelte/transition';
 
 	export let open = false;
 
@@ -42,35 +43,15 @@
         <Cell span={12} class="search-result">
             <div>
                 {#each searchResult as pokemon}
-                    <button on:click={() => goToPage(pokemon)}>
-                        <LayoutGrid>
-                            <Cell span={1}>
-                                {#if pokemon.id.includes(searchText)}
-                                    <p style="font-weight: bold;">{pokemon.id}</p>
-                                {:else}
-                                    <p>{pokemon.id}</p>
-                                {/if}
-                            </Cell>
-                            <Cell span={5}>
-                                {#if pokemon.name.includes(searchText)}
-                                    <p style="font-weight: bold;">{pokemon.name}</p>
-                                {:else}
-                                    <p>{pokemon.name}</p>
-                                {/if}</Cell>
-                            <Cell span={3}>
-                                {#if pokemon.type1.includes(searchText)}
-                                    <p style="font-weight: bold;">{pokemon.type1}</p>
-                                {:else}
-                                    <p>{pokemon.type1}</p>
-                                {/if}</Cell>
-                            <Cell span={3}>
-                                {#if pokemon.type2.includes(searchText)}
-                                    <p style="font-weight: bold;">{pokemon.type2}</p>
-                                {:else}
-                                    <p>{pokemon.type2}</p>
-                                {/if}</Cell>
-                        </LayoutGrid>
-                    </button>
+                    {#if searchResult.length > 20}
+                        <button on:click={() => goToPage(pokemon)}>
+                            <SearchTag pokemon={pokemon} searchText={searchText} />
+                        </button>
+                    {:else}
+                        <button on:click={() => goToPage(pokemon)} transition:slide|global>
+                            <SearchTag pokemon={pokemon} searchText={searchText} />
+                        </button>
+                    {/if}
                 {/each}
             </div>
         </Cell>
@@ -80,7 +61,7 @@
 <style>
 	aside {
 		left: -100%;
-		transition: left 0.3s ease-in-out
+		transition: left 0.3s ease-in-out;
 	}
 	
 	.open {
@@ -116,7 +97,6 @@
         font-size: 18px;
     }
     .search-input input {
-
         font-size: 20px;
         text-align: center;
     }

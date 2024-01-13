@@ -10,6 +10,9 @@
     import SearchBar from "$lib/SearchBar.svelte";
     import MenuToggle from "$lib/MenuToggle.svelte";
 
+    import { scale, slide, fade } from 'svelte/transition';
+    import { backOut, quintOut } from 'svelte/easing';
+
     let open = false
     const pokeid = $page.params.pokeid.replaceAll("0", "");
     const imgRe = /archives.bulbagarden.net\/media\/upload\/.+?.png(?!\/)/g;
@@ -84,6 +87,7 @@
     }
 
     async function getImageLink() {
+        await new Promise(r => setTimeout(r, 100));
         pokemon.imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
 
         // fetch(`https://bulbapedia.bulbagarden.net/wiki/${pokemon.name}_(Pok%C3%A9mon)`) // Skip CORS... sometimes
@@ -108,7 +112,11 @@
     </Cell>
     <Cell span={6} class="image-holder">
         <!-- Picture section -->
-        <img class="poke-image" src={pokemon.imgUrl} alt="{pokemon.name}... hopefully" />
+        {#if pokemon.imgUrl.length > 0}
+            <img class="poke-image" src={pokemon.imgUrl} alt="{pokemon.name}... hopefully" transition:scale={{duration: 500, opacity: 0, easing: backOut }} />
+        {:else}
+            <img class="pokeball-image" src={'/pokeball.png'} alt="pokeball" />
+        {/if}
     </Cell>
     <Cell span={6}>
         <!-- Data section -->
@@ -117,6 +125,7 @@
             <GeneraRow genera={pokemon.genera} />
 
             <Cell span={12} class="data-table">
+                <div in:fade|global={{ delay: 250, duration: 3000 }}>
                 <LayoutGrid>
                     <DataRow name="Type 1" value={pokemon.type1} />
                     {#if pokemon.type2.length > 0}
@@ -127,6 +136,7 @@
                     <DataRow name="Color" value={pokemon.color} />
                     <DataRow name="Shape" value={pokemon.shape} />
                 </LayoutGrid>
+                </div>
             </Cell>
 
             <DescriptionRow description={pokemon.description} />
@@ -139,5 +149,8 @@
         width: -webkit-fill-available;
         image-rendering: pixelated;
         filter: drop-shadow(6px 6px 3px #5e5754c4);
+    }
+    .pokeball-image {
+        width: 50px;
     }
 </style>
